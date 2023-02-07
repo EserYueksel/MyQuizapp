@@ -146,12 +146,12 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                             setQuestion()
                         }
                         // If no more questions are left the finish screen will appear
-                        else ->{
+                        else -> {
                             val intent = Intent(this, ResultActivity::class.java)
                             intent.putExtra(Constants.USER_NAME, mUserName)
                             intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
                             // How many questions are left? - they will be sent over
-                            intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionsList)
+                            intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionsList?.size)
                             startActivity(intent)
                             finish()
                         }
