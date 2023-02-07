@@ -1,6 +1,13 @@
 package com.example.myquizapp
 
 object Constants {
+    // keys/location under which we are storing the details to retrieve them, when moved from one activity to another
+    const val USER_NAME: String = "user_name"
+    const val TOTAL_QUESTIONS: String = "total_questions"
+    const val CORRECT_ANSWERS: String = "correct_answers"
+
+
+
     fun getQuestions():ArrayList<Question>{
         val questionsList = ArrayList<Question>()
 

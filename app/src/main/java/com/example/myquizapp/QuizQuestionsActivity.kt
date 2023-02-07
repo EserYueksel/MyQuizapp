@@ -1,5 +1,6 @@
 package com.example.myquizapp
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var mCurrentPosition: Int = 1
     private var mQuestionsList: ArrayList<Question>? = null
     private var mSelectedOptionPosition: Int = 0
+    private var mUserName: String? = null
+    private var mCorrectAnswers: Int = 0
 
     private var progressBar: ProgressBar? = null
     private var tvProgress: TextView? = null
@@ -29,6 +32,9 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
+
+        // intent used to get details at the position of USER_NAME
+        mUserName = intent.getStringExtra(Constants.USER_NAME)
 
         progressBar = findViewById(R.id.progressBar)
         tvProgress = findViewById(R.id.tv_progress)
@@ -52,7 +58,8 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setQuestion() {
-
+        // resets button color after each question
+        defaultOptionsView()
         val question: Question = mQuestionsList!![mCurrentPosition - 1]
         ivImage?.setImageResource(question.image)
         progressBar?.progress = mCurrentPosition
@@ -134,20 +141,31 @@ class QuizQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                     mCurrentPosition++
 
                     when{
+                        // When still questions are left
                         mCurrentPosition <= mQuestionsList!!.size -> {
                             setQuestion()
                         }
+                        // If no more questions are left the finish screen will appear
                         else ->{
-                            Toast.makeText(this,"You made it to the end",Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, ResultActivity::class.java)
+                            intent.putExtra(Constants.USER_NAME, mUserName)
+                            intent.putExtra(Constants.CORRECT_ANSWERS, mCorrectAnswers)
+                            // How many questions are left? - they will be sent over
+                            intent.putExtra(Constants.TOTAL_QUESTIONS, mQuestionsList)
+                            startActivity(intent)
+                            finish()
                         }
                     }
                     // If selected answer is incorrect, the selected red color will be shown as the button bg
                 } else {
                     val question = mQuestionsList?.get(mCurrentPosition -1)
+                    // Checks if there is an incorrect answer - if so then bg_color button is set to red
                     if(question!!.correctAnswer != mSelectedOptionPosition){
                         answerView(mSelectedOptionPosition, R.drawable.wrong_option_border_bg)
+                    }else{
+                        mCorrectAnswers++
                     }
-                    // similar here, only for the correct answer and green bg color for button
+                    // similar here, only for the correct answer and green bg_color for button
                     answerView(question.correctAnswer, R.drawable.correct_option_border_bg)
 
                     if(mCurrentPosition == mQuestionsList!!.size){
